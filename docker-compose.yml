@@ -1,0 +1,20 @@
+version: '3'
+
+# Define the services/containers to be run
+services:
+
+	backend:
+		build: server
+		ports:
+			- 3000:3000
+		links:
+			- pg
+		depends_on:
+			- pg
+
+	pg: #replace with another db
+		image: postgres:alpine
+		ports:
+			- 5432:5432
+		restart: always
+		environment: 

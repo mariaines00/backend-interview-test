@@ -1,0 +1,16 @@
+{
+    "name": "pipedrive-backend-technical-challenge",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node ./bin/www",
+        "devstart": "nodemon ./bin/www"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "pg": "^7.12.1"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.1"
+    }
+}
