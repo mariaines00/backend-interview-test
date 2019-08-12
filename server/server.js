@@ -7,26 +7,35 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); 
-app.use(errorHandler);
+app.use(express.urlencoded({ extended: true }));
 
 //request handling chain
+app.use(routesLogger);
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
+
 app.use('/organizations', routes);
 
-
-function logger() {
-    
+function routesLogger(err, req, res, next) {
+    console.log(`${req.method} ${req.baseUrl}`);
+    next(req);
 }
 
-/**
- * Display the error stack in the console
- * Send something back to browser
- */
-function errorHandler(err, req, res, next) {
+function logErrors(err, req, res, next) {
     console.error(err.stack);
-
-    res.status(err.status || 500);
-    res.render(err.message);
+    next(err);
+}
+function clientErrorHandler(err, req, res, next) {
+    if (req.xhr) {
+        res.status(500).send({ error: 'Ups something went wrong :(' });
+    } else {
+        next(err);
+    }
+}
+function errorHandler(err, req, res, next) {
+    res.status(500);
+    //res.render('error', { error: err });
 }
 
 // Initialize server
