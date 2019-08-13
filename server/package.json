@@ -2,9 +2,10 @@
     "name": "pipedrive-backend-technical-challenge",
     "version": "0.0.0",
     "private": true,
+    "main": "server.js",
     "scripts": {
-        "start": "node ./server/server.js",
-        "devstart": "nodemon ./server/server.js"
+        "start": "node server.js",
+        "devstart": "nodemon /server.js"
     },
     "dependencies": {
         "express": "^4.17.1",
