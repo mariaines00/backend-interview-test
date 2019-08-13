@@ -8,9 +8,9 @@ services:
     ports:
       - 3000:3000
     links:
-      - pg
+      - database
     depends_on:
-      - pg
+      - database
 
   database:
     image: postgres:alpine
