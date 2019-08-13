@@ -20,3 +20,6 @@ services:
     environment:
       - POSTGRES_USER:'pipedrive'
       - POSTGRES_PASSWORD:'pipedrive'
+      - POSTGRES_DB:'organizations'
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql

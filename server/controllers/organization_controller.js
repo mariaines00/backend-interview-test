@@ -1,6 +1,7 @@
 'use strict';
 
-const db = require('../db/connection');
+const { pool } = require('../db/connection');
+
 
 /* Implementation */
 
