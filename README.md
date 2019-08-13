@@ -1,8 +1,7 @@
 # Organization Relationships - RESTful API
 
 ## For the _pipedrive_ backend technical challenge
-
-### Using Node.js,(with express), PostgreSQL and docker
+Using Node.js,(with express), PostgreSQL and docker.
 
 The goal of this task it to create a RESTful service that stores organisations with relations (parent to child relation).
 
@@ -53,7 +52,7 @@ The goal of this task it to create a RESTful service that stores organisations w
 			]
 		}
 	]
-}
+	}
     `
      
 
@@ -63,12 +62,13 @@ The goal of this task it to create a RESTful service that stores organisations w
 
 ------
 
-### to run locally
+### Instructions to run the project locally
 
-0. clone the repositor in your local machine
-1. navigate to the directory containing the docker-compose.yml file
-2. run docker-compose up -d --build
-3. Use [postman](https://www.getpostman.com/) or an equivalent software to make use of the endpoints like explained above
+0. have docker and docker-compose installed
+1. clone the repositor in your local machine
+2. navigate to the directory containing the docker-compose.yml file
+3. run docker-compose up -d --build
+4. Use [postman](https://www.getpostman.com/) or an equivalent software to make use of the endpoints like explained above
 
 ------
 
@@ -81,3 +81,5 @@ The goal of this task it to create a RESTful service that stores organisations w
 
 ### Extra considerations
 
+ - There are no unit tests (so far);
+ - Very basic error handling;

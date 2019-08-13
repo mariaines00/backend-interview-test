@@ -10,18 +10,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //request handling chain
-app.use(routesLogger);
+app.all('*' , function(req, res, next) {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+    next();
+});
+app.use('/organizations', routes);
 app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
 
-app.use('/organizations', routes);
 
-function routesLogger(err, req, res, next) {
-    console.log(`${req.method} ${req.baseUrl}`);
-    next(req);
-}
-
+/* Express error handlers */
 function logErrors(err, req, res, next) {
     console.error(err.stack);
     next(err);
@@ -35,8 +34,8 @@ function clientErrorHandler(err, req, res, next) {
 }
 function errorHandler(err, req, res, next) {
     res.status(500);
-    //res.render('error', { error: err });
+    res.send('Ups something went wrong :(');
 }
 
 // Initialize server
-app.listen(port, () => { console.log(`server listening on port ${port}`); });
+app.listen(port, () => { console.log(`server listening on port ${port}`); });9
