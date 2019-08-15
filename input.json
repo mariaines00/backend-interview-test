@@ -2,7 +2,7 @@
     "org_name": "Paradise Island",
     "daughters": [
         {
-            "org_name:": "Banana tree",
+            "org_name": "Banana tree",
             "daughters": [
                 {
                     "org_name": "Yellow Banana"
@@ -16,7 +16,7 @@
             ]
         },
         {
-            "org_name:": "Big banana tree",
+            "org_name": "Big banana tree",
             "daughters": [
                 {
                     "org_name": "Yellow Banana"

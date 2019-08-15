@@ -1,8 +1,6 @@
 const { Client } = require('pg');
 
-function DatabaseClient() {
-
-	return client = new Client({
+	client = new Client({
 		host: 'localhost',
 		port: 5432,
 		user: 'pipedrive',
@@ -10,6 +8,6 @@ function DatabaseClient() {
 		database: 'organizations',
 	})
 
+module.exports = {
+	client
 }
-
-module.exports = new DatabaseClient();
