@@ -1,11 +1,15 @@
-const Pool = require('pg').Pool;
+const { Client } = require('pg');
 
-const pool = new Pool({
-	user: 'pipedrive',
-	host: 'localhost',
-	database: 'organizations',
-	password: 'pipedrive',
-	port: 5432,
-});
+function DatabaseClient() {
 
-module.exports = pool;
+	return client = new Client({
+		host: 'localhost',
+		port: 5432,
+		user: 'pipedrive',
+		password: 'pipedrive',
+		database: 'organizations',
+	})
+
+}
+
+module.exports = new DatabaseClient();

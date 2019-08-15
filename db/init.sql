@@ -1,4 +1,5 @@
--- ADD ROLES AND AUTH PART
+CREATE ROLE pipedrive WITH LOGIN PASSWORD 'pipedrive';
+GRANT ALL PRIVILEGES ON DATABASE organizations TO pipedrive;
 
 CREATE TABLE IF NOT EXISTS ORGANIZATIONS (
     ID SERIAL PRIMARY KEY,
@@ -9,7 +10,5 @@ CREATE TABLE IF NOT EXISTS RELATIONS (
     ID SERIAL PRIMARY KEY,
     START_ORG INT NOT NULL,
     END_ORG INT NOT NULL,
-    TYPE VARCHAR(10) CHECK(TYPE = 'parent' OR TYPE = 'sibling' OR TYPE = 'daughter')
+    TYPE VARCHAR(10) CHECK(TYPE = 'parent' OR TYPE = 'sister' OR TYPE = 'daughter')
 );
-
--- ADD FKs also cascading deletes

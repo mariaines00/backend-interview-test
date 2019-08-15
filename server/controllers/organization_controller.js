@@ -1,8 +1,6 @@
 'use strict';
 
-const { pool } = require('../db/connection');
-
-
+const client = require('../db/connection');
 /* Implementation */
 
 /**
@@ -11,7 +9,12 @@ const { pool } = require('../db/connection');
  * @param {*} res 
  */
 const get_relations = function (req, res) {
-    res.send('NOT IMPLEMENTED');
+    // client.connect();
+    // client
+    //     .query('SELECT NOW()')
+    //     .then(result => res.send(result))
+    //     .catch(e => res.send(e.stack))
+    //     .then(() => client.end())
 };
 
 
@@ -21,8 +24,11 @@ const get_relations = function (req, res) {
  * @param {*} res 
  */
 const create_all = function (req, res) {
-    res.send('NOT IMPLEMENTED');
+    
 };
+
+
+//
 
 
 module.exports = {
