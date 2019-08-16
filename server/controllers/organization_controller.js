@@ -23,7 +23,6 @@ const create_all = function (req, res) {
 		.then(() => {
 			(async () => {
 				let result = await transverseJSONTree(req.body, '');
-				console.log(result);
 				client.query(result);
 				client.end();
 			})()
@@ -42,20 +41,25 @@ const create_all = function (req, res) {
  * @param {*} organization 
  */
 async function transverseJSONTree(organization, script) {
-	
-	validateInputData(organization);
-	let org_name = organization['org_name'];
 
-	if(!script.includes(`${org_name}')`)) { //ensures no duplicate insertions of orgs
+	validateInputData(organization);
+	const org_name = organization['org_name'];
+
+	if (!script.includes(`${org_name}')`)) { //ensures no duplicate insertions of orgs
 		script += insertOrganization(org_name);
 	}
 
-	if (organization['daughters']) {
-		for (let daughter of organization['daughters']) {
-			script += insertParentChildRelation(org_name, daughter['org_name']); //TODO: daughter must be validated first
-			script = await transverseJSONTree(daughter, script);
+	const daughters = organization['daughters'];
+	if(daughters)  {
+		for (let index = 0, length = daughters.length; index < length; index++) {
+			if (index + 1 < length) {
+				script += insertSiblingRelation(daughters[index]['org_name'], daughters[index + 1]['org_name']);
+			}
+			script += insertParentChildRelation(org_name, daughters[index]['org_name']); //TODO: daughter must be validated first
+			script = await transverseJSONTree(daughters[index], script);
 		}
 	}
+
 	return script;
 }
 

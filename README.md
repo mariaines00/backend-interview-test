@@ -79,8 +79,9 @@ The goal of this task it to create a RESTful service that stores organisations w
 
 ------
 
-### Extra considerations
+### Extra considerations (nice to haves I did not implement)
 
-- There are no unit tests (so far);
-- Very basic error handling;
+- There are no unit tests;
+- Very basic error handling and input validation;
 - A lot of configurations are hardcoded instead of using best practices like adding them .env files;
+- No transactions in the db connection
