@@ -38,4 +38,4 @@ function errorHandler(err, req, res, next) {
 }
 
 // Initialize server
-app.listen(port, () => { console.log(`server listening on port ${port}`); });9
+app.listen(port, () => { console.log(`server listening on port ${port}`); });

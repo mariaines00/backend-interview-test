@@ -16,7 +16,7 @@ The goal of this task it to create a RESTful service that stores organisations w
 	"org_name": "Paradise Island",
 	"daughters": [
 		{
-			"org_name:": "Banana tree",
+			"org_name": "Banana tree",
 			"daughters": [
 				{
 					"org_name": "Yellow Banana"
@@ -30,7 +30,7 @@ The goal of this task it to create a RESTful service that stores organisations w
 			]
 		},
 		{
-			"org_name:": "Big banana tree",
+			"org_name": "Big banana tree",
 			"daughters": [
 				{
 					"org_name": "Yellow Banana"
