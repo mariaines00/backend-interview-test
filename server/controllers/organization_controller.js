@@ -9,12 +9,6 @@ const client = require('../db/connection').client;
  * @param {*} res 
  */
 const get_relations = function (req, res) {
-	client.connect()
-	client
-		.query(`select * from organizations`)
-		.then(result => console.log(result))
-		.catch(e => console.error(e.stack))
-		.then(() => client.end())
 };
 
 
@@ -28,7 +22,10 @@ const create_all = function (req, res) {
 		.connect()
 		.then(() => {
 			(async () => {
-				await transverseJSONTree(client, req.body);
+				let result = await transverseJSONTree(req.body, '');
+				console.log(result);
+				client.query(result);
+				client.end();
 			})()
 		})
 		.catch(e => res.status(500).send({ error: e.message }) )
@@ -44,21 +41,22 @@ const create_all = function (req, res) {
  * @param {*} client 
  * @param {*} organization 
  */
-async function transverseJSONTree(client, organization) {
-
+async function transverseJSONTree(organization, script) {
+	
 	validateInputData(organization);
 	let org_name = organization['org_name'];
-	console.log(org_name);
 
-	insertOrganization(client, org_name);
-	
-	if (organization['daughters']) {
-		for (let daughter of organization['daughters']) {
-			insertParentChildRelation(client, org_name, daughter['org_name']); //TODO: daughter must be validated first
-			transverseJSONTree(client, daughter);
-		}
+	if(!script.includes(`${org_name}')`)) { //ensures no duplicate insertions of orgs
+		script += insertOrganization(org_name);
 	}
 
+	if (organization['daughters']) {
+		for (let daughter of organization['daughters']) {
+			script += insertParentChildRelation(org_name, daughter['org_name']); //TODO: daughter must be validated first
+			script = await transverseJSONTree(daughter, script);
+		}
+	}
+	return script;
 }
 
 /**
@@ -79,11 +77,8 @@ function validateInputData(organization) {
  * @param {Client} client 
  * @param {string} name 
  */
-function insertOrganization(client, name) {
-	client.query(
-		'INSERT INTO ORGANIZATIONS(NAME) VALUES($1)',
-		[name]
-	);
+function insertOrganization(name) {
+	return `INSERT INTO ORGANIZATIONS(NAME) VALUES('${name}'); \n`
 }
 
 /**
@@ -92,11 +87,18 @@ function insertOrganization(client, name) {
  * @param {string} parentName 
  * @param {string} childName 
  */
-function insertParentChildRelation(client, parentName, childName) {
-	client.query(
-		'INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES($1, $2, $3)',
-		[parentName, childName, 'parent']
-	);
+function insertParentChildRelation(parentName, childName) {
+	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${parentName}', '${childName}', 'parent'); \n`
+}
+
+/**
+ * 
+ * @param {*} client 
+ * @param {string} parentName 
+ * @param {string} childName 
+ */
+function insertSiblingRelation(daughter1, daughter2) {
+	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${daughter1}', '${daughter2}', 'sisters'); \n`
 }
 
 
