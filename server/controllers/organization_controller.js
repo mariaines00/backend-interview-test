@@ -21,12 +21,14 @@ const get_relations = function (req, res) {
 	let aux_pageSize = parseInt(req.query.pageSize);
 	const pageSize = (aux_pageSize < 100 ? aux_pageSize : 100);
 
-	pool.query('SELECT * FROM relationships WHERE LOWER(start_org) = LOWER($1) OR LOWER(end_org) = LOWER($1)', [org_name], (err, res) => {
+	pool.query('SELECT * FROM organizations', (err, result) => {
 		if (err) {
-			res.status(500).send({ error: e.message })
+			throw err;
 		}
+		res.send(result.rows);
 		//parseData then res.send
 	})
+	
 };
 
 
@@ -41,7 +43,12 @@ const create_all = function (req, res) {
 		let error = false;
 		try {
 			await pool.query('BEGIN');
-			let result = await transverseJSONTree(req.body, '');
+
+			let unsorted_result = await transverseJSONTree(req.body, '');
+			let result = unsorted_result.split(";");
+			result.sort();
+			result = result.join("\n;");
+			
 			await pool.query(result);
 			await pool.query('COMMIT');
 		} catch (e) {
@@ -103,7 +110,7 @@ async function transverseJSONTree(organization, script) {
 
 	const org_name = organization['org_name'];
 
-	if (!script.includes(`${org_name}')`)) { //ensures no duplicate insertions of orgs
+	if (!script.includes(`${org_name}');`)) { //ensures no duplicate insertions of orgs
 		script += insertOrganization(org_name);
 	}
 
@@ -144,7 +151,7 @@ function validateInputDataForPOST(organization) {
  * @returns {string} query
  */
 function insertOrganization(name) {
-	return `INSERT INTO ORGANIZATIONS(NAME) VALUES('${name}'); \n`
+	return `INSERT INTO ORGANIZATIONS(NAME) VALUES('${name}');`
 }
 
 /**
@@ -154,17 +161,25 @@ function insertOrganization(name) {
  * @returns {string} query
  */
 function insertParentChildRelation(parentName, childName) {
-	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${parentName}', '${childName}', 'parent'); \n`
+	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE)
+	 SELECT p.id, c.id, 'parent'
+	 FROM(SELECT id FROM organizations WHERE name = '${parentName}') p
+	, (SELECT id FROM organizations WHERE name = '${childName}') c;`
+	//return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${parentName}', '${childName}', 'parent');`
 }
 
 /**
  * Returns premade query to insert new relationship of type sister
- * @param {string} parentName 
- * @param {string} childName 
+ * @param {string} daughter1
+ * @param {string} daughter2
  * @returns {string} query
  */
 function insertSiblingRelation(daughter1, daughter2) {
-	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${daughter1}', '${daughter2}', 'sister'); \n`
+	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE)
+	 SELECT p.id, e.id, 'sister'
+	 FROM(SELECT id FROM organizations WHERE name = '${daughter1}') p
+	, (SELECT id FROM organizations WHERE name = '${daughter2}') e;`
+	//return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${daughter1}', '${daughter2}', 'sister');`
 }
 
 
