@@ -21,18 +21,7 @@ const get_relations = function (req, res) {
 	let aux_pageSize = parseInt(req.query.pageSize);
 	const pageSize = (aux_pageSize < 100 ? aux_pageSize : 100);
 
-	if (!validateInputDataForGET(req.query, res)) {
-		res.sendStatus(400);
-		return;
-	}
-
-	const org_name = req.query.name;
-	let aux_page = parseInt(req.query.page);
-	const page = (aux_page === 0 ? 1 : aux_page);
-	let aux_pageSize = parseInt(req.query.pageSize);
-	const pageSize = (aux_pageSize < 100 ? aux_pageSize : 100);
-
-	pool.query('SELECT * FROM organizations WHERE name = $1', [org_name], (err, res) => {
+	pool.query('SELECT * FROM relationships WHERE LOWER(start_org) = LOWER($1) OR LOWER(end_org) = LOWER($1)', [org_name], (err, res) => {
 		if (err) {
 			res.status(500).send({ error: e.message })
 		}
@@ -150,29 +139,29 @@ function validateInputDataForPOST(organization) {
 }
 
 /**
- * 
- * @param {pool} pool 
+ * Returns premade query to insert new organization
  * @param {string} name 
+ * @returns {string} query
  */
 function insertOrganization(name) {
 	return `INSERT INTO ORGANIZATIONS(NAME) VALUES('${name}'); \n`
 }
 
 /**
- * 
- * @param {*} pool 
+ * Returns premade query to insert new relationship of type parent
  * @param {string} parentName 
  * @param {string} childName 
+ * @returns {string} query
  */
 function insertParentChildRelation(parentName, childName) {
 	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${parentName}', '${childName}', 'parent'); \n`
 }
 
 /**
- * 
- * @param {*} pool 
+ * Returns premade query to insert new relationship of type sister
  * @param {string} parentName 
  * @param {string} childName 
+ * @returns {string} query
  */
 function insertSiblingRelation(daughter1, daughter2) {
 	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${daughter1}', '${daughter2}', 'sister'); \n`

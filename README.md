@@ -57,7 +57,7 @@ The goal of this task it to create a RESTful service that stores organisations w
      
 
 2. GET  
-    http://localhost:3000/organizations/{:name}?page=1&pageSize=100
+    http://localhost:3000/organizations/?name=org_name&&page=1&pageSize=100
     - Retrieve all relations of one organization (includes all parents daughters and sisters). Queried by name. List is ordered by name and one page may return 100 rows at max with pagination support. The result will look like this:
 	`
 	[{

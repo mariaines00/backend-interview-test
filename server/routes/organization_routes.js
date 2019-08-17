@@ -7,6 +7,7 @@ const controller = require('../controllers/organization_controller');
 
 /**
  *  Defines the routes and assigns controllers
+ * 
  */
 
 
@@ -20,7 +21,7 @@ router.post('/', controller.create_all);
 
 
 /**
- * Endpoint 2
+ * Endpoint 2 ?name=[org_name]&&page=[int]&pageSize=[int]
  *  Retrieve all relations of one organization (parents, daughters and sisters).
  *  Queried by name.
  *  List is ordered by name and one page may return 100 rows at max with pagination support.
