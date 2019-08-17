@@ -25,7 +25,7 @@ router.post('/', controller.create_all);
  *  Queried by name.
  *  List is ordered by name and one page may return 100 rows at max with pagination support.
  */
-router.get('/:name', controller.get_relations);
+router.get('/', controller.get_relations);
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
-const { Client } = require('pg');
+const Pool = require('pg').Pool;
 
-client = new Client({
-	host: 'localhost',
+pool = new Pool({
+	host: 'localhost', //database
 	port: 5432,
 	user: 'pipedrive',
 	password: 'pipedrive',
@@ -9,5 +9,5 @@ client = new Client({
 })
 
 module.exports = {
-	client
+	pool
 }

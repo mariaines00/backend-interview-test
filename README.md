@@ -57,8 +57,29 @@ The goal of this task it to create a RESTful service that stores organisations w
      
 
 2. GET  
-    http://localhost:3000/organizations/{:name}
-    - Retrieve all relations of one organization (includes all parents daughters and sisters). Queried by name. List is ordered by name and one page may return 100 rows at max with pagination support.
+    http://localhost:3000/organizations/{:name}?page=1&pageSize=100
+    - Retrieve all relations of one organization (includes all parents daughters and sisters). Queried by name. List is ordered by name and one page may return 100 rows at max with pagination support. The result will look like this:
+	`
+	[{
+	"relationship_type": "parent",
+	"org_name": "Banana tree"
+	}, {
+	"relationship_type": "parent",
+	"org_name": "Big banana tree"
+	}, {
+	"relationship_type": "sister",
+	"org_name": "Brown Banana"
+	}, {
+	"relationship_type": "sister",
+	"org_name": "Green Banana"
+	}, {
+	"relationship_type": "daughter",
+	"org_name": "Phoneutria Spider"
+	}, {
+	"relationship_type": "sister",
+	"org_name": "Yellow Banana"
+	}]
+	`
 
 ------
 
