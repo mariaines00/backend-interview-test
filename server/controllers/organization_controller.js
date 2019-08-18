@@ -27,7 +27,6 @@ const get_relations = function (req, res) {
 		if (err) {
 			throw err;
 		}
-		console.log(result);
 		res.send(result.rows);
 	})
 	
@@ -105,18 +104,18 @@ function validateInputDataForGET(requestQuery) {
  */
 function selectRelationships(org_name, pageSize, page) {
 	return `
-	SELECT * FROM organizations org
+	SELECT relationship_type, name as org_name FROM organizations org
 	INNER JOIN
 		(
-			SELECT 
+			SELECT
             end_org as other_id,
-			relation_type, CASE WHEN relation_type = 'parent' THEN 'daughter' WHEN relation_type = 'sister' THEN 'sister' ELSE 'parent' END as relation_type
+			relationship_type as rel, CASE WHEN relationship_type = 'parent' THEN 'daughter' WHEN relationship_type = 'sister' THEN 'sister' ELSE '' END as relationship_type
             FROM relationships r JOIN organizations o ON r.start_org = o.id
             WHERE o.name = '${org_name}'
         UNION
         SELECT 
             start_org as other_id,
-			relation_type, CASE WHEN relation_type = 'parent' THEN 'parent' WHEN relation_type = 'sister' THEN 'sister' ELSE 'parent' END as relation_type
+			relationship_type as rel, CASE WHEN relationship_type = 'parent' THEN 'parent' WHEN relationship_type = 'sister' THEN 'sister' ELSE '' END as relationship_type
             FROM relationships r JOIN organizations o ON r.end_org = o.id
             WHERE o.name = '${org_name}'
 		) AS aux
@@ -190,11 +189,11 @@ function insertOrganization(name) {
  * @returns {string} query
  */
 function insertParentChildRelation(parentName, childName) {
-	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE)
+	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATIONSHIP_TYPE)
 	 SELECT p.id, c.id, 'parent'
 	 FROM(SELECT id FROM organizations WHERE name = '${parentName}') p
 	, (SELECT id FROM organizations WHERE name = '${childName}') c;`
-	//return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${parentName}', '${childName}', 'parent');`
+	//return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATIONSHIP_TYPE) VALUES('${parentName}', '${childName}', 'parent');`
 }
 
 /**
@@ -204,11 +203,11 @@ function insertParentChildRelation(parentName, childName) {
  * @returns {string} query
  */
 function insertSiblingRelation(daughter1, daughter2) {
-	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE)
+	return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATIONSHIP_TYPE)
 	 SELECT p.id, e.id, 'sister'
 	 FROM(SELECT id FROM organizations WHERE name = '${daughter1}') p
 	, (SELECT id FROM organizations WHERE name = '${daughter2}') e;`
-	//return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATION_TYPE) VALUES('${daughter1}', '${daughter2}', 'sister');`
+	//return `INSERT INTO RELATIONSHIPS(START_ORG, END_ORG, RELATIONSHIP_TYPE) VALUES('${daughter1}', '${daughter2}', 'sister');`
 }
 
 
