@@ -95,14 +95,14 @@ The goal of this task it to create a RESTful service that stores organisations w
 
 ### Questions
 
-3. a)
-3. b) 
+3. a)The implemented solution was not build taking into consideration such a large dataset. I have not tested but there's a chance that the algorithm for parsing the data from the incomng POST request body might push past Node's heap limit (v8's default is 1.4 GB tho). It will be very inneficient in terms of performance, especially regarding I/O operations (for the HTTP requests and the database connections).
+
+3. b) In order to support such an high number of relations we would need to make changes on both the server and the database. For the post endpoint, if we wish to maintain the capability of inserting everything at once we would have to increase the maximum permited body size (althougt it is both unsafe and taxing on the networks). The recursive algorithm I implemented to parse the incoming data from the body of the POST request would also need to be re-done, as it stands it's very likely to run out of memory in the heap, the same applies for incoming data from the database. A good improvement here involves using a duplex(streams) so that we can parse and transform the data as it is written and read. On the database side it might necessary to implement a more efficient way of accessing the data, using indexes and therefore reducing the number of IOs required to find the required data rows.
 
 ------
 
-### Extra considerations (nice to haves I did not implement)
+### Extra considerations (regarding the implementation´´~´~~)
 
 - There are no unit tests;
-- Very basic error handling and input validation;
+- Very basic error handling and input validation, meaning that is not very robust nor battle ready;
 - A lot of configurations are hardcoded instead of using best practices like adding them .env files;
-- No transactions in the db connection
