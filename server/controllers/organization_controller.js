@@ -21,12 +21,14 @@ const get_relations = function (req, res) {
 	let aux_pageSize = parseInt(req.query.pageSize);
 	const pageSize = (aux_pageSize < 100 ? aux_pageSize : 100);
 
-	pool.query('SELECT * FROM organizations', (err, result) => {
+	let query = selectRelationships(org_name,pageSize, page);
+
+	pool.query(query, (err, result) => {
 		if (err) {
 			throw err;
 		}
+		console.log(result);
 		res.send(result.rows);
-		//parseData then res.send
 	})
 	
 };
@@ -95,6 +97,33 @@ function validateInputDataForGET(requestQuery) {
 	return isvalid;
 } 
 
+/**
+ * Returns prepared statement to fetch all relations of a given organization
+ * @param {string} org_name 
+ * @param {string} pageSize for limit
+ * @param {string} page for offset
+ */
+function selectRelationships(org_name, pageSize, page) {
+	return `
+	SELECT * FROM organizations org
+	INNER JOIN
+		(
+			SELECT 
+            end_org as other_id,
+			relation_type, CASE WHEN relation_type = 'parent' THEN 'daughter' WHEN relation_type = 'sister' THEN 'sister' ELSE 'parent' END as relation_type
+            FROM relationships r JOIN organizations o ON r.start_org = o.id
+            WHERE o.name = '${org_name}'
+        UNION
+        SELECT 
+            start_org as other_id,
+			relation_type, CASE WHEN relation_type = 'parent' THEN 'parent' WHEN relation_type = 'sister' THEN 'sister' ELSE 'parent' END as relation_type
+            FROM relationships r JOIN organizations o ON r.end_org = o.id
+            WHERE o.name = '${org_name}'
+		) AS aux
+	ON org.id = aux.other_id
+	ORDER BY org.name ASC LIMIT ${pageSize} OFFSET ${page}
+	`
+}
 
 /** AUXILIAR FUNCTIONS FOR POST (create_all) **/
 
