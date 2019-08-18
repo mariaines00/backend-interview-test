@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool;
 
 pool = new Pool({
-	host: 'localhost', //database
+	host: 'database', //localhost
 	port: 5432,
 	user: 'pipedrive',
 	password: 'pipedrive',

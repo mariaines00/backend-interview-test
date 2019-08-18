@@ -12,12 +12,11 @@ const get_relations = function (req, res) {
 
 	if(!validateInputDataForGET(req.query, res)) {
 		res.sendStatus(400);
-		return;
+		next();
 	}
 
 	const org_name = req.query.name;
-	let aux_page = parseInt(req.query.page);
-	const page = (aux_page === 0 ? 1 : aux_page);
+	const page = parseInt(req.query.page);
 	let aux_pageSize = parseInt(req.query.pageSize);
 	const pageSize = (aux_pageSize < 100 ? aux_pageSize : 100);
 
@@ -25,7 +24,8 @@ const get_relations = function (req, res) {
 
 	pool.query(query, (err, result) => {
 		if (err) {
-			throw err;
+			res.status(500).send({ error: e.message });
+			next();
 		}
 		res.send(result.rows);
 	})
