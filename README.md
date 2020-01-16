@@ -1,6 +1,6 @@
 # Organization Relationships - RESTful API
 
-## For the _pipedrive_ backend technical challenge
+## For a _company interview_ backend technical challenge
 Using Node.js,(with express), PostgreSQL and docker.
 
 The goal of this task it to create a RESTful service that stores organisations with relations (parent to child relation).
